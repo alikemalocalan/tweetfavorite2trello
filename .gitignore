@@ -1,4 +1,30 @@
 # Created by .ignore support plugin (hsz.mobi)
+### Linux template
+*~
+
+# temporary files which can be created if a process still has a handle open of a deleted file
+.fuse_hidden*
+
+# KDE directory preferences
+.directory
+
+# Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+# .nfs files are created when an open file is removed but is still being accessed
+.nfs*
+
+### JEnv template
+# JEnv local Java version configuration file
+.java-version
+
+# Used by previous versions of JEnv
+.jenv-version
+
+### Scala template
+*.class
+*.log
+
 ### JetBrains template
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
@@ -69,50 +95,30 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
-### Scala template
+### Java template
+# Compiled class file
 *.class
+
+# Log file
 *.log
 
-### JENKINS_HOME template
-#Learn more about Jenkins and JENKINS_HOME directory for which this file is intended.
-#  http://jenkins-ci.org/
-#  https://wiki.jenkins-ci.org/display/JENKINS/Administering+Jenkins
+# BlueJ files
+*.ctxt
 
-#ignore all JENKINS_HOME except jobs directory, root xml config, and .gitignore file
-/*
-!/jobs
-!/.gitignore
-!/*.xml
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
 
-#ignore all files in jobs subdirectories except for folders
-#note: git doesn't track folders, only file content
-jobs/**
-!jobs/**/
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
 
-#uncomment the following line to save next build numbers with config
-#!jobs/**/nextBuildNumber
-
-#exclude only config.xml files in repository subdirectories
-!config.xml
-
-#don't track workspaces (when users build on the master)
-jobs/**/*workspace
-
-#as a result only settings and job config.xml files in JENKINS_HOME will be tracked by git
-
-### SBT template
-# Simple Build Tool
-# http://www.scala-sbt.org/release/docs/Getting-Started/Directories.html#configuring-version-control
-
-dist/*
-target/
-lib_managed/
-src_managed/
-project/boot/
-project/plugins/project/
-.history
-.cache
-.lib/
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
 
 ### macOS template
 # General
@@ -142,28 +148,57 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-### Java template
-# Compiled class file
-*.class
+### Windows template
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
 
-# Log file
-*.log
+# Dump file
+*.stackdump
 
-# BlueJ files
-*.ctxt
+# Folder config file
+[Dd]esktop.ini
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# Windows shortcuts
+*.lnk
+
+### JDeveloper template
+# default application storage directory used by the IDE Performance Cache feature
+.data/
+
+# used for ADF styles caching
+temp/
+
+# default output directories
+classes/
+deploy/
+javadoc/
+
+# lock file, a part of Oracle Credential Store Framework
+cwallet.sso.lck
+### SBT template
+# Simple Build Tool
+# http://www.scala-sbt.org/release/docs/Getting-Started/Directories.html#configuring-version-control
+
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+.history
+.cache
+.lib/
 

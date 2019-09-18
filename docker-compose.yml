@@ -1,0 +1,6 @@
+version: '2'
+services:
+  demoservice:
+    image: OrganizeTweetApp:latest
+    ports:
+      - "8080:8080"
