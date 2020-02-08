@@ -26,8 +26,8 @@ object TwitterServices extends Config{
   val tf = new TwitterFactory(cb.build())
   val twitter: Twitter = tf.getInstance()
 
-  def getFavorites(username: String = "alikemalocalan"): FavoriteResult = {
-    val result = getFavoritesWithPagination(username)
+  def getFavorites(username: String = "alikemalocalan", maxTweetNumber: Int = 50): FavoriteResult = {
+    val result = getFavoritesWithPagination(username, maxTweetNumber)
     FavoriteResult(result.length, result)
   }
 
