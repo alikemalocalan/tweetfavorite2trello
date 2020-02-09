@@ -16,7 +16,8 @@ class TweetController {
 
   @RequestMapping(path = Array("/tweets"), method = Array(RequestMethod.GET), produces = Array(MediaType.APPLICATION_JSON_VALUE))
   @ResponseBody
-  def handleRequest(@RequestParam(value = "50", required = false) page: Optional[String]): String =
-    write(TwitterServices.getFavorites(maxTweetNumber = page.orElse("50").toInt))
+  def handleRequest(@RequestParam(value = "1", required = false) page: Optional[String],
+                    @RequestParam(value = "50", required = false) count: Optional[String]): String =
+    write(TwitterServices.getFavorites(page = page.orElse("1").toInt, maxTweetNumber = count.orElse("1").toInt))
 
 }

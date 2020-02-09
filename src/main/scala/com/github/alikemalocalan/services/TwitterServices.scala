@@ -1,5 +1,7 @@
 package com.github.alikemalocalan.services
 
+import java.io
+
 import com.github.alikemalocalan.Config
 import org.apache.commons.logging.{Log, LogFactory}
 import twitter4j.conf.ConfigurationBuilder
@@ -26,17 +28,23 @@ object TwitterServices extends Config{
   val tf = new TwitterFactory(cb.build())
   val twitter: Twitter = tf.getInstance()
 
-  def getFavorites(username: String = "alikemalocalan", maxTweetNumber: Int = 50): FavoriteResult = {
-    val result = getFavoritesWithPagination(username, maxTweetNumber)
+  def getFavorites(username: String = "alikemalocalan", page: Int, maxTweetNumber: Int): FavoriteResult = {
+    val result = getFavoritesWithPagination(username, page, maxTweetNumber)
     FavoriteResult(result.length, result)
   }
 
-  def getFavoritesWithPagination(username: String = "alikemalocalan", maxTweetNumber: Int = 50): List[UserTweet] =
-    twitter.getFavorites(username, new Paging(1, maxTweetNumber)).toList
-      .map { x =>
-        val imageUrls: Array[String] = x.getMediaEntities.filter(_.getType == "photo").map(_.getMediaURLHttps)
-        val videoUrls: Option[String] = x.getMediaEntities.filter(_.getType == "video").map(_.getVideoVariants.maxBy(_.getBitrate).getUrl).headOption
-        val externalUrl: Array[String] = x.getURLEntities.map(_.getExpandedURL)
-        UserTweet(Option(x.getText), ExternalURl(externalUrl, imageUrls, videoUrls))
-      }
+  def getFavoritesWithPagination(username: String = "alikemalocalan", page: Int = 1, maxTweetNumber: Int = 50,result: List[UserTweet] = List()): List[UserTweet] = {
+    val currentPage = 0
+    if (page < page) {
+      val onePage: List[UserTweet] = twitter.getFavorites(username, new Paging(page, maxTweetNumber)).toList
+        .map { x =>
+          val imageUrls: Array[String] = x.getMediaEntities.filter(_.getType == "photo").map(_.getMediaURLHttps)
+          val videoUrls: Option[String] = x.getMediaEntities.filter(_.getType == "video").map(_.getVideoVariants.maxBy(_.getBitrate).getUrl).headOption
+          val externalUrl: Array[String] = x.getURLEntities.map(_.getExpandedURL)
+          UserTweet(Option(x.getText), ExternalURl(externalUrl, imageUrls, videoUrls))
+        }
+      getFavoritesWithPagination(username, currentPage + 1, maxTweetNumber,onePage ++ result)
+    }
+    else result
+  }
 }
