@@ -9,7 +9,8 @@ scalaVersion := "2.13.1"
 name := "OrganizeTweetApp"
 version := "0.1"
 
-val http4sVersion = "0.20.10"
+val akkaVersion = "2.5.26"
+val akkaHttpVersion = "10.1.11"
 
 // Only necessary for SNAPSHOT releases
 resolvers += Resolver.sonatypeRepo("snapshots")
@@ -18,8 +19,10 @@ resolvers += Resolver.sonatypeRepo("snapshots")
   Project dependencies
  */
 libraryDependencies ++= Seq(
-  "org.springframework.boot" % "spring-boot-starter-web" % "2.1.8.RELEASE",
-  "org.springframework.boot" % "spring-boot-configuration-processor" % "2.1.7.RELEASE",
+  "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
+  "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
+  "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
   "org.json4s" %% "json4s-native" % "3.6.7",
   "org.json4s" %% "json4s-jackson" % "3.6.7",
   "org.twitter4j" % "twitter4j-core" % "4.0.7",
