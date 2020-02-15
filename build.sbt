@@ -1,7 +1,7 @@
 /*
   General Scala attributes
  */
-scalaVersion := "2.11.12"
+scalaVersion := "2.13.1"
 
 /*
   General project attributes

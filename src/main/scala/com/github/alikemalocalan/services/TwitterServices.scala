@@ -5,8 +5,7 @@ import org.apache.commons.logging.{Log, LogFactory}
 import twitter4j.conf.ConfigurationBuilder
 import twitter4j.{Paging, Twitter, TwitterFactory}
 
-import scala.collection.JavaConversions._
-
+import scala.jdk.CollectionConverters._
 
 case class ExternalURl(expanded_url: Array[String], imageUrls: Array[String], videoUrl: Option[String] = None)
 
@@ -31,19 +30,24 @@ object TwitterServices extends Config{
     FavoriteResult(result.length, result)
   }
 
-  def getFavoritesWithPagination(username: String = "alikemalocalan", page: Int = 1, maxTweetNumber: Int = 50,result: List[UserTweet] = List()): List[UserTweet] = {
-    val currentPage = 0
-    if (currentPage < page) {
-      val onePage: List[UserTweet] = twitter.getFavorites(username, new Paging(page, maxTweetNumber)).toList
-        .map { x =>
-          val imageUrls: Array[String] = x.getMediaEntities.filter(_.getType == "photo").map(_.getMediaURLHttps)
-          val videoUrls: Option[String] = x.getMediaEntities.filter(_.getType == "video").map(_.getVideoVariants.maxBy(_.getBitrate).getUrl).headOption
-          val externalUrl: Array[String] = x.getURLEntities.map(_.getExpandedURL)
-          UserTweet(Option(x.getText), ExternalURl(externalUrl, imageUrls, videoUrls))
-        }
-      Thread.sleep(100)
-      getFavoritesWithPagination(username, currentPage + 1, maxTweetNumber, onePage ++ result)
+  def getFavoritesWithPagination(username: String, page: Int, maxTweetNumber: Int): List[UserTweet] = {
+
+    @scala.annotation.tailrec
+    def getFavorites(username: String, currentPage: Int, maxTweetNumber: Int, result: List[UserTweet] = List()): List[UserTweet] = {
+      if (currentPage <= page) {
+        val onePage: List[UserTweet] = twitter.getFavorites(username, new Paging(currentPage, maxTweetNumber)).asScala.toList
+          .map { x =>
+            val imageUrls: Array[String] = x.getMediaEntities.filter(_.getType == "photo").map(_.getMediaURLHttps)
+            val videoUrls: Option[String] = x.getMediaEntities.filter(_.getType == "video").map(_.getVideoVariants.maxBy(_.getBitrate).getUrl).headOption
+            val externalUrl: Array[String] = x.getURLEntities.map(_.getExpandedURL)
+            UserTweet(Option(x.getText), ExternalURl(externalUrl, imageUrls, videoUrls))
+          }
+        Thread.sleep(100)
+        getFavorites(username, currentPage + 1, maxTweetNumber, onePage ++ result)
+      }
+      else result
     }
-    else result
+
+    getFavorites(username, 1, maxTweetNumber)
   }
 }
