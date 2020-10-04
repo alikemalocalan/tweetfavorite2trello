@@ -22,7 +22,7 @@ object OrganizeTweetApp extends Config {
     val route = path("tweets") {
       pathEndOrSingleSlash {
         get {
-          parameters('page.as[Int].?, 'count.as[Int].?) { (page, count) =>
+          parameters(Symbol("page").as[Int].?, Symbol("count").as[Int].?) { (page, count) =>
             import com.github.alikemalocalan.model.FavoriteResultProtocol._
 
             val pageNumber = page.getOrElse(1)

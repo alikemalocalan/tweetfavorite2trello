@@ -1,7 +1,7 @@
 package com.github.alikemalocalan.services
 
-import com.github.alikemalocalan.model.{ExternalURl, FavoriteResult, UserTweet}
-import com.github.alikemalocalan.{Config, model}
+import com.github.alikemalocalan.Config
+import com.github.alikemalocalan.model.{ExternalURl, FavoriteResult, User, UserTweet}
 import twitter4j.conf.ConfigurationBuilder
 import twitter4j.{Paging, Twitter, TwitterFactory}
 
@@ -18,17 +18,18 @@ object TwitterServices extends Config {
   val tf = new TwitterFactory(cb.build())
   val twitter: Twitter = tf.getInstance()
 
-  def getFavoritesWithPagination(username: String = "alikemalocalan", page: Int, maxTweetNumber: Int): FavoriteResult = {
+  def getFavoritesWithPagination(username: String = "akemalocalan", page: Int, maxTweetNumber: Int): FavoriteResult = {
 
     @scala.annotation.tailrec
     def get(username: String, currentPage: Int, maxTweetNumber: Int, result: List[UserTweet] = List()): List[UserTweet] = {
       if (currentPage <= page) {
         val onePage: List[UserTweet] = twitter.getFavorites(username, new Paging(currentPage, maxTweetNumber)).asScala.toList
-          .map { x =>
-            val imageUrls: Array[String] = x.getMediaEntities.filter(_.getType == "photo").map(_.getMediaURLHttps)
-            val videoUrls: Option[String] = x.getMediaEntities.filter(_.getType == "video").map(_.getVideoVariants.maxBy(_.getBitrate).getUrl).headOption
-            val externalUrl: Array[String] = x.getURLEntities.map(_.getExpandedURL)
-            model.UserTweet(Option(x.getText), ExternalURl(externalUrl, imageUrls, videoUrls))
+          .map { tweet =>
+            val imageUrls: Array[String] = tweet.getMediaEntities.filter(_.getType == "photo").map(_.getMediaURLHttps)
+            val videoUrls: Option[String] = tweet.getMediaEntities.filter(_.getType == "video").map(_.getVideoVariants.maxBy(_.getBitrate).getUrl).headOption
+            val externalUrl: Array[String] = tweet.getURLEntities.map(_.getExpandedURL)
+            val user = User(tweet.getUser.getId, tweet.getUser.getScreenName)
+            UserTweet(tweet.getId, tweet.getCreatedAt, Option(tweet.getText), ExternalURl(externalUrl, imageUrls, videoUrls), user)
           }
         Thread.sleep(100)
         get(username, currentPage + 1, maxTweetNumber, onePage ++ result)
