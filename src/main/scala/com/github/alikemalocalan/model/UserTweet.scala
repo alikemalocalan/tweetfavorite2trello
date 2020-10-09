@@ -50,11 +50,13 @@ case class UserTweet(tweetID: Long, createdAt: Date, text: Option[String], urls:
     sb.toString
   }
 
-  def toTrelloCard: Card = {
+  def toTrelloCard(cardId: Option[String] = None): Card = {
     val card = new Card()
 
     card.setDateLastActivity(createdAt)
     card.setName(getTitle)
+
+    cardId.foreach(card.setId)
 
     val desc = description
     card.setDesc(desc)

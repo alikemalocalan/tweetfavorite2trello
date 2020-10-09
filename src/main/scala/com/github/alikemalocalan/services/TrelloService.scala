@@ -3,7 +3,7 @@ package com.github.alikemalocalan.services
 import com.github.alikemalocalan.Config
 import com.github.alikemalocalan.model.UserTweet
 import com.julienvey.trello.Trello
-import com.julienvey.trello.domain.Card
+import com.julienvey.trello.domain.{Board, Card, TList}
 import com.julienvey.trello.impl.TrelloImpl
 import com.julienvey.trello.impl.http.ApacheHttpClient
 
@@ -13,38 +13,54 @@ object TrelloService extends Config {
 
   val trelloApi = new TrelloImpl(trelloAccessToken, trelloAccessSecret, new ApacheHttpClient())
 
-  def importToTrello(trelloUserId: String, tweets: Array[UserTweet]): Unit = {
-    val userBoardId = trelloApi.getMemberBoards(trelloUserId).get(0).getId
-    val listId = trelloApi.getBoardLists(userBoardId).get(0).getId
-    val cardList = trelloApi.getBoardCards(userBoardId).asScala
-
+  def importToTrello(boardId: String, boardIdListId: String, tweets: List[UserTweet]): Unit = {
+    val cardList = getUserCards(boardId)
     tweets.foreach { tweet =>
       val entityCard =
-        cardList.find(card => card.getName.startsWith(tweet.tweetID.toString)) // TODO: change with if-else
-          .map { card =>
-            val updatedCard = tweet.toTrelloCard
-            updatedCard.setId(card.getId)
-            updatedCard
-          }.getOrElse(trelloApi.createCard(listId, tweet.toTrelloCard).update())
-
-      entityCard.setName(tweet.getTitle)
-
-      val finalCard = trelloApi.updateCard(entityCard).update()
-      updateCardAttachment(tweet, finalCard, trelloApi)
+        cardList.find(card => card.getName.startsWith(tweet.tweetID.toString))
+          .map(card => updateCardFromTweet(card.getId, tweet))
+          .getOrElse(createCardFromTweet(boardIdListId, tweet))
+      updateCardAttachment(tweet, entityCard, trelloApi)
     }
 
   }
 
   def updateCardAttachment(tweet: UserTweet, card: Card, trelloApi: Trello): Unit = {
-    tweet.urls.imageUrls.foreach(url =>
-      trelloApi.addUrlAttachmentToCard(card.getId, url)
-    )
+    val attachmentList = trelloApi.getCardAttachments(card.getId).asScala
+    tweet.urls.getImageNames.foreach { case (url, name) =>
+      if (!attachmentList.exists(_.getName == name))
+        trelloApi.addUrlAttachmentToCard(card.getId, url)
+    }
     tweet.urls.expanded_url.foreach(url =>
-      trelloApi.addUrlAttachmentToCard(card.getId, url)
+      if (!attachmentList.map(_.getUrl).contains(url))
+        trelloApi.addUrlAttachmentToCard(card.getId, url)
     )
     tweet.urls.videoUrl.foreach(url =>
-      trelloApi.addUrlAttachmentToCard(card.getId, url)
+      if (!attachmentList.map(_.getUrl).contains(url))
+        trelloApi.addUrlAttachmentToCard(card.getId, url)
     )
   }
+
+  def getUserBoards(trelloUserName: String): Option[Board] =
+    trelloApi.getMemberBoards(trelloUserName)
+      .asScala
+      .headOption
+
+  def getUserBoardIds(trelloUserName: String): Option[String] =
+    getUserBoards(trelloUserName).map(_.getId)
+
+  def getUserBoardLists(boardId: String): Seq[TList] =
+    trelloApi.getBoardLists(boardId)
+      .asScala.toSeq
+
+  def getUserCards(boardId: String): Seq[Card] =
+    trelloApi.getBoardCards(boardId)
+      .asScala.toSeq
+
+  def createCardFromTweet(boardListId: String, tweet: UserTweet): Card =
+    trelloApi.createCard(boardListId, tweet.toTrelloCard()).update()
+
+  def updateCardFromTweet(cardId: String, tweet: UserTweet): Card =
+    trelloApi.updateCard(tweet.toTrelloCard(Some(cardId))).update()
 
 }

@@ -1,7 +1,7 @@
 package com.github.alikemalocalan.services
 
 import com.github.alikemalocalan.Config
-import com.github.alikemalocalan.model.{ExternalURl, FavoriteResult, User, UserTweet}
+import com.github.alikemalocalan.model.{ExternalURl, User, UserTweet}
 import twitter4j.conf.ConfigurationBuilder
 import twitter4j.{Paging, Twitter, TwitterFactory}
 
@@ -18,7 +18,7 @@ object TwitterServices extends Config {
   val tf = new TwitterFactory(cb.build())
   val twitter: Twitter = tf.getInstance()
 
-  def getFavoritesWithPagination(username: String = "akemalocalan", page: Int, maxTweetNumber: Int): FavoriteResult = {
+  def getFavoritesWithPagination(username: String = "akemalocalan", page: Int, maxTweetNumber: Int): List[UserTweet] = {
 
     @scala.annotation.tailrec
     def get(username: String, currentPage: Int, maxTweetNumber: Int, result: List[UserTweet] = List()): List[UserTweet] = {
@@ -37,7 +37,6 @@ object TwitterServices extends Config {
       else result
     }
 
-    val result = get(username, 1, maxTweetNumber)
-    FavoriteResult(result.length, result)
+    get(username, 1, maxTweetNumber)
   }
 }

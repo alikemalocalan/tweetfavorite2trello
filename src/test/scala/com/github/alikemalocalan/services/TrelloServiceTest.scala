@@ -10,9 +10,13 @@ class TrelloServiceTest extends AnyFlatSpec with Matchers {
 
     val trelloTestUserId = "alikemalocalan"
 
-    val tweets = TwitterServices.getFavoritesWithPagination(page = 1, maxTweetNumber = 15).tweets.toArray
+    val tweets = TwitterServices.getFavoritesWithPagination(page = 1, maxTweetNumber = 15)
 
-    TrelloService.importToTrello(trelloTestUserId, tweets)
+    val boardId = TrelloService.getUserBoardIds(trelloTestUserId).head
+
+    val boardListId = TrelloService.getUserBoardLists(boardId).head.getId
+
+    TrelloService.importToTrello(boardId, boardListId, tweets)
   }
 
 
