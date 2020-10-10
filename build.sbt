@@ -7,14 +7,14 @@ scalaVersion := "2.13.1"
   General project attributes
  */
 name := "OrganizeTweetApp"
-version := "0.1"
+version := "1.0"
 
-val akkaVersion = "2.5.26"
-val akkaHttpVersion = "10.1.11"
+val akkaVersion = "2.5.31"
+val akkaHttpVersion = "10.2.1"
 
 // Only necessary for SNAPSHOT releases
-resolvers += Resolver.sonatypeRepo("snapshots")
-
+resolvers += Resolver.sonatypeRepo("releases")
+resolvers += "jitpack" at "https://jitpack.io"
 /*
   Project dependencies
  */
@@ -23,10 +23,11 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
   "com.typesafe.akka" %% "akka-stream" % akkaVersion,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
-  "org.json4s" %% "json4s-native" % "3.6.7",
-  "org.json4s" %% "json4s-jackson" % "3.6.7",
+  "com.typesafe" % "config" % "1.4.0",
   "org.twitter4j" % "twitter4j-core" % "4.0.7",
-  "com.typesafe" % "config" % "1.3.4"
+  "com.taskadapter" % "trello-java-wrapper" % "0.14",
+  "com.github.Steppschuh" % "Java-Markdown-Generator" % "1.3.2",
+  "org.scalatest" %% "scalatest" % "3.2.2" % Test
 )
 
 /*

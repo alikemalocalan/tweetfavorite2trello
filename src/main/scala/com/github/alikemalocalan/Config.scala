@@ -7,13 +7,17 @@ trait Config {
   import com.typesafe.config.ConfigFactory
 
   val conf: config.Config = ConfigFactory.load()
-  val tokenConfig: config.Config = conf.getConfig("tokens")
+  val twitterTokenConfig: config.Config = conf.getConfig("twitter.tokens")
+  val trelloTokenConfig: config.Config = conf.getConfig("trello.tokens")
   val apiConfig: config.Config = conf.getConfig("api")
 
-  val consumerKey: String = tokenConfig.getString("consumerKey")
-  val consumerSecret: String = tokenConfig.getString("consumerSecret")
-  val accessToken: String = tokenConfig.getString("accessToken")
-  val accessTokenSecret: String = tokenConfig.getString("accessTokenSecret")
+  val consumerKey: String = twitterTokenConfig.getString("consumerKey")
+  val consumerSecret: String = twitterTokenConfig.getString("consumerSecret")
+  val accessToken: String = twitterTokenConfig.getString("accessToken")
+  val accessTokenSecret: String = twitterTokenConfig.getString("accessTokenSecret")
+
+  val trelloAccessToken: String = trelloTokenConfig.getString("accessToken")
+  val trelloAccessSecret: String = trelloTokenConfig.getString("accessTokenSecret")
 
   val address: String = apiConfig.getString("host")
   val port: Int = apiConfig.getInt("port")
