@@ -1,9 +1,9 @@
 package com.github.alikemalocalan.services
 
 import com.github.alikemalocalan.Config
-import com.github.alikemalocalan.model.UserTweet
+import com.github.alikemalocalan.model.{TrelloBoard, UserTweet}
 import com.julienvey.trello.Trello
-import com.julienvey.trello.domain.{Board, Card, TList}
+import com.julienvey.trello.domain.{Card, TList}
 import com.julienvey.trello.impl.TrelloImpl
 import com.julienvey.trello.impl.http.ApacheHttpClient
 
@@ -41,13 +41,15 @@ object TrelloService extends Config {
     )
   }
 
-  def getUserBoards(trelloUserName: String): Option[Board] =
+  def getUserBoards(trelloUserName: String): Option[TrelloBoard] = {
     trelloApi.getMemberBoards(trelloUserName)
       .asScala
       .headOption
+      .map(board => TrelloBoard(board.getId, board.getName))
+  }
 
   def getUserBoardIds(trelloUserName: String): Option[String] =
-    getUserBoards(trelloUserName).map(_.getId)
+    getUserBoards(trelloUserName).map(_.id)
 
   def getUserBoardLists(boardId: String): Seq[TList] =
     trelloApi.getBoardLists(boardId)

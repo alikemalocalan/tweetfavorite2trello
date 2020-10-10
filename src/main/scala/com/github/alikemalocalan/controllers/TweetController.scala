@@ -8,8 +8,11 @@ import com.github.alikemalocalan.model.UserTweet
 import com.github.alikemalocalan.services.TwitterServices
 
 object TweetController {
+  /*
+ https://trello.com/1/authorize?expiration=never&scope=read,write,account&response_type=token&name=Server%20Token&key=${trelloKey}&return_url
+  */
 
-  val getTweetsRoute: Route = path("tweets") {
+  val tweetsRoute: Route = path("twitter" / "tweets") {
     pathEndOrSingleSlash {
       get {
         parameters(Symbol("page").as[Int].?, Symbol("count").as[Int].?) { (page, count) =>
@@ -26,6 +29,4 @@ object TweetController {
       }
     }
   }
-
-
 }
