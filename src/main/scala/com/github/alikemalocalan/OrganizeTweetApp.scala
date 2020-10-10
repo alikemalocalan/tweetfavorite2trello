@@ -2,6 +2,7 @@ package com.github.alikemalocalan
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.StatusCodes
 import akka.http.scaladsl.server.Directives._
 import com.github.alikemalocalan.controllers.TrelloController.boardRoute
 import com.github.alikemalocalan.controllers.TweetController.tweetsRoute
@@ -16,7 +17,13 @@ object OrganizeTweetApp extends Config {
     val logger = system.log
     implicit val executionContext: ExecutionContextExecutor = system.dispatcher
 
-    val routes = boardRoute ~ tweetsRoute
+    val healthRoute = path("health") {
+      get {
+        complete(StatusCodes.OK, "OK")
+      }
+    }
+
+    val routes = healthRoute ~ boardRoute ~ tweetsRoute
 
     Http().newServerAt(address, port).bindFlow(routes)
       .onComplete {

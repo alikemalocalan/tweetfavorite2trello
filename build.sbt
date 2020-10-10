@@ -7,7 +7,7 @@ scalaVersion := "2.13.1"
   General project attributes
  */
 name := "OrganizeTweetApp"
-version := "0.1"
+version := "1.0"
 
 val akkaVersion = "2.5.31"
 val akkaHttpVersion = "10.2.1"
