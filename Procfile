@@ -1,0 +1,1 @@
+ web target/universal/stage/bin/tweetfavorite2trello -Dhttp.port=$PORT
